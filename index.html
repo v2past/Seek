@@ -376,26 +376,30 @@
                     localStorage.setItem('openai_api_key', apiKeyInput.value.trim());
                 }
             });
-            
-            // 上传图片处理
+
+            // 确保点击上传区域触发文件选择
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            // 文件选择时处理文件上传
             fileInput.addEventListener('change', function() {
                 const file = fileInput.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         previewImage.src = e.target.result;
-                        previewImage.style.display = 'block';
+                        previewImage.style.display = 'block';  // 显示预览图片
                     };
                     reader.readAsDataURL(file);
                 }
             });
 
-            // 转换图片
+            // 转换图片按钮
             convertButton.addEventListener('click', function() {
                 const apiKey = localStorage.getItem('openai_api_key');
                 const imageData = previewImage.src.split(',')[1];  // 获取Base64图片数据
                 const prompt = stylePrompt.value.trim();
-
                 convertImage(apiKey, imageData, prompt);
             });
 

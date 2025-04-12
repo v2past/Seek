@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Style Converter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Image Style Converter</h1>
+    <div class="upload-container">
+      <form id="uploadForm" enctype="multipart/form-data">
+        <div class="file-upload">
+          <label for="image">Upload Image</label>
+          <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+        <div class="style-input">
+          <label for="styleDescription">Style Description</label>
+          <input type="text" id="styleDescription" name="styleDescription" placeholder="e.g., 'turn it into a watercolor painting'" required>
+        </div>
+        <button type="submit">Convert</button>
+      </form>
+    </div>
+    <div id="result" class="hidden">
+      <h2>Result</h2>
+      <div class="result-container">
+        <div class="original">
+          <h3>Original Image</h3>
+          <img id="originalImage" src="" alt="Original Image">
+        </div>
+        <div class="converted">
+          <h3>Converted Image</h3>
+          <img id="convertedImage" src="" alt="Converted Image">
+          <a id="downloadLink" href="" download="converted-image.png">Download</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const imageFile = formData.get('image');
+      const styleDescription = formData.get('styleDescription');
+
+      // 显示上传的原始图片
+      const originalImage = document.getElementById('originalImage');
+      originalImage.src = URL.createObjectURL(imageFile);
+      originalImage.onload = () => {
+        document.getElementById('result').classList.remove('hidden');
+      };
+
+      // 调用后端 API 进行图片转换
+      try {
+        const response = await fetch('/convert', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to convert image');
+        }
+
+        const data = await response.json();
+        const convertedImage = document.getElementById('convertedImage');
+        const downloadLink = document.getElementById('downloadLink');
+
+        convertedImage.src = data.imageUrl;
+        downloadLink.href = data.imageUrl;
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to convert image. Please try again.');
+      }
+    });
+  </script>
+</body>
+</html>

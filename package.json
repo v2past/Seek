@@ -1,0 +1,14 @@
+{
+  "name": "image-style-converter",
+  "version": "1.0.0",
+  "description": "Web app to convert images using OpenAI's API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "formidable": "^3.0.0",
+    "openai": "^4.0.0"
+  }
+}
